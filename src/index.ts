@@ -1,6 +1,6 @@
 import { createServer, Server } from 'http';
 import { config } from 'dotenv';
-import { requestHandler } from './handlers/requestsHandler.js';
+import { requestHandler } from './handlers/requestsHandler';
 
 config();
 

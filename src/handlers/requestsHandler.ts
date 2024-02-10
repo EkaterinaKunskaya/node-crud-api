@@ -1,7 +1,7 @@
 import { IncomingMessage, ServerResponse } from 'http';
-import { getUsers, getUser, addUser, updateUser, deleteUser } from '../controllers/userController.js';
-import { API_BASE_PATH, METHOD } from '../constants/constants.js';
-import { sendResponse } from '../utils/sendResponse.js';
+import { getUsers, getUser, addUser, updateUser, deleteUser } from '../controllers/userController';
+import { API_BASE_PATH, METHOD } from '../constants/constants';
+import { sendResponse } from '../utils/sendResponse';
 import { validate as validateId } from 'uuid';
 
 export const requestHandler = (req: IncomingMessage, res: ServerResponse) => {
