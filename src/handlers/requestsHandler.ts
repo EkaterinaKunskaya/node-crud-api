@@ -19,7 +19,7 @@ export const requestHandler = (req: IncomingMessage, res: ServerResponse) => {
                     break;
                 }
 
-                if (url?.endsWith(paramsId) && !restParams) {
+                if (url?.endsWith(paramsId) && !restParams && validateId(paramsId)) {
                     (validateId(paramsId))
                         ? getUser(req, res, paramsId)
                         : sendResponse(res, 400, { message: 'Invalid user ID' });
@@ -32,14 +32,14 @@ export const requestHandler = (req: IncomingMessage, res: ServerResponse) => {
                 if (url === API_BASE_PATH) addUser(req, res);
                 break;
             case METHOD.PUT:
-                if (url?.endsWith(paramsId) && !restParams) {
+                if (url?.endsWith(paramsId) && !restParams && validateId(paramsId)) {
                     (validateId(paramsId))
                     ? updateUser(req, res, paramsId)
                     : sendResponse(res, 400, { message: 'Invalid user ID' });
                 };
                 break;
             case METHOD.DELETE:
-                if (url?.endsWith(paramsId) && !restParams) {
+                if (url?.endsWith(paramsId) && !restParams && validateId(paramsId)) {
                     (validateId(paramsId))
                     ? deleteUser(req, res, paramsId)
                     : sendResponse(res, 400, { message: 'Invalid user ID' });
