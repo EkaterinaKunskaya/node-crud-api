@@ -6,7 +6,11 @@ import { validate as validateId } from 'uuid';
 
 export const requestHandler = (req: IncomingMessage, res: ServerResponse) => {
     const { url, method } = req;
-    // TODO: normal validation for id
+
+    const parsedUrl =req?.url?.split('/');
+    const paramsId = parsedUrl?.[3] as string;
+    const restParams = parsedUrl?.[4] as string;
+
     try {
         switch (method) {
             case METHOD.GET:
@@ -15,10 +19,9 @@ export const requestHandler = (req: IncomingMessage, res: ServerResponse) => {
                     break;
                 }
 
-                if (url?.match(/\/api\/users\/([0-9]+)/)) {
-                    const id = url.split('/')[3];
-                    (validateId(id))
-                        ? getUser(req, res, id)
+                if (url?.endsWith(paramsId) && !restParams) {
+                    (validateId(paramsId))
+                        ? getUser(req, res, paramsId)
                         : sendResponse(res, 400, { message: 'Invalid user ID' });
                     break;
                 } 
@@ -29,16 +32,18 @@ export const requestHandler = (req: IncomingMessage, res: ServerResponse) => {
                 if (url === API_BASE_PATH) addUser(req, res);
                 break;
             case METHOD.PUT:
-                if (url?.match(/\/api\/users\/([0-9]+)/)) {
-                    const id = url.split('/')[3];
-                    updateUser(req, res, id);
-                }
+                if (url?.endsWith(paramsId) && !restParams) {
+                    (validateId(paramsId))
+                    ? updateUser(req, res, paramsId)
+                    : sendResponse(res, 400, { message: 'Invalid user ID' });
+                };
                 break;
             case METHOD.DELETE:
-                if (url?.match(/\/api\/users\/([0-9]+)/)) {
-                    const id = url.split('/')[3];
-                    deleteUser(req, res, id);
-                }
+                if (url?.endsWith(paramsId) && !restParams) {
+                    (validateId(paramsId))
+                    ? deleteUser(req, res, paramsId)
+                    : sendResponse(res, 400, { message: 'Invalid user ID' });
+                };
                 break;
             default:
                 sendResponse(res, 404, { message: 'Not Found' });
