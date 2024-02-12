@@ -37,7 +37,7 @@ export async function getUser(
 		const user = await getUserById(id);
 
 		if (!user) {
-			sendResponse(res, 404, { message: 'User don\'t exist.' });
+			sendResponse(res, 404, { message: 'User don\'t exist' });
 		} else {
 			sendResponse(res, 200, user);
 		}
@@ -83,7 +83,7 @@ export async function updateUser(
 		const user = await getUserById(id);
 
 		if (!user) {
-			sendResponse(res, 404, { message: 'User don\'t exist.' });
+			sendResponse(res, 404, { message: 'User don\'t exist' });
 		} else {
 			const body = await bodyParser(req) as User;
 			const { username, age, hobbies } = body;
@@ -92,6 +92,13 @@ export async function updateUser(
 				age: age || user.age,
 				hobbies: hobbies || user.hobbies,
 			};
+
+			const isValidUser = validateUserFields({id, ...editableUserInfo});
+
+			if (!isValidUser) {
+				sendResponse(res, 400, { message: 'Invalid user fields' });
+				return;
+			}
 
 			const editableUser = await editUser(id, editableUserInfo);
 			sendResponse(res, 200, editableUser);
@@ -110,11 +117,14 @@ export async function deleteUser(
 ) {
 	try {
 		const user = await getUserById(id);
-
+		console.log(user)
 		if (!user) {
-			sendResponse(res, 404, { message: 'User don\'t exist.' });
+			sendResponse(res, 404, { message: 'User don\'t exist' });
 		} else {
 			await removeUser(id);
+			console.log(id)
+			console.log({ message: `User ${id} deleted` })
+
 			sendResponse(res, 204, { message: `User ${id} deleted` });
 		}
 	} catch (error) {
