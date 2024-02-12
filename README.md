@@ -1,5 +1,4 @@
 # CRUD API
-=
 
 ### How to install
 Clone the repository and install packages using `npm i`  
