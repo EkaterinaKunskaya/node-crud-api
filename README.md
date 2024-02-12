@@ -12,6 +12,8 @@ Run tests `npm run test`
 ### Pay attention
 Please pay attention to the `CRUD API.postman_collection.json` file in the root of the project. You can import this collection into a **postman** for easy verification. I've prepared everything to make your job as easy as possible. Just click on the import button in the postman and drag the json file into the window that opens
 
+**For the convenience of your check, I have already created three users. Please pay attention to this!**
+
 **Before checking the tests, please do not forget to restart the server for the tests to work correctly!**
 
 If you have problems starting the project and you suddenly have never used TypeScript, please install ts-node globally using this command `npm install -g ts-node`

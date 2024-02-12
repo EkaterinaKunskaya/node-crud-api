@@ -117,14 +117,11 @@ export async function deleteUser(
 ) {
 	try {
 		const user = await getUserById(id);
-		console.log(user)
+
 		if (!user) {
 			sendResponse(res, 404, { message: 'User don\'t exist' });
 		} else {
 			await removeUser(id);
-			console.log(id)
-			console.log({ message: `User ${id} deleted` })
-
 			sendResponse(res, 204, { message: `User ${id} deleted` });
 		}
 	} catch (error) {
