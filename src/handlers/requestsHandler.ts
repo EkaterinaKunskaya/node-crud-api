@@ -4,14 +4,29 @@ import { API_BASE_PATH, METHOD } from '../constants/constants';
 import { sendResponse } from '../utils/sendResponse';
 import { validate as validateId } from 'uuid';
 
+
 export const requestHandler = (req: IncomingMessage, res: ServerResponse) => {
     const { url, method } = req;
 
-    const parsedUrl =req?.url?.split('/');
+    const parsedUrl = url?.split('/');
+    const pathAPI = '/' + parsedUrl?.[1] + '/' + parsedUrl?.[2] as string;
     const paramsId = parsedUrl?.[3] as string;
     const restParams = parsedUrl?.[4] as string;
 
+    const isCorrectSingleUserRequest = url?.endsWith(paramsId) && !restParams && pathAPI === API_BASE_PATH;
+
     try {
+
+        if (
+            isCorrectSingleUserRequest 
+            && !validateId(paramsId) 
+            && method !== METHOD.POST
+            && pathAPI === API_BASE_PATH
+        ) {
+            sendResponse(res, 400, { message: 'Invalid user ID' });
+            return;
+        }
+
         switch (method) {
             case METHOD.GET:
                 if (url === API_BASE_PATH) {
@@ -19,31 +34,36 @@ export const requestHandler = (req: IncomingMessage, res: ServerResponse) => {
                     break;
                 }
 
-                if (url?.endsWith(paramsId) && !restParams && validateId(paramsId)) {
-                    (validateId(paramsId))
-                        ? getUser(req, res, paramsId)
-                        : sendResponse(res, 400, { message: 'Invalid user ID' });
+                if (isCorrectSingleUserRequest) {
+                    getUser(req, res, paramsId);
                     break;
-                } 
+                }
 
                 sendResponse(res, 404, { message: 'Not Found' });
                 break;
             case METHOD.POST:
-                if (url === API_BASE_PATH) addUser(req, res);
+                if (url === API_BASE_PATH) {
+                    addUser(req, res);
+                    break;
+                } 
+                
+                sendResponse(res, 404, { message: 'Not Found' });
                 break;
             case METHOD.PUT:
-                if (url?.endsWith(paramsId) && !restParams && validateId(paramsId)) {
-                    (validateId(paramsId))
-                    ? updateUser(req, res, paramsId)
-                    : sendResponse(res, 400, { message: 'Invalid user ID' });
+                if (isCorrectSingleUserRequest) {
+                    updateUser(req, res, paramsId);
+                    break;
                 };
+
+                sendResponse(res, 404, { message: 'Not Found' });
                 break;
             case METHOD.DELETE:
-                if (url?.endsWith(paramsId) && !restParams && validateId(paramsId)) {
-                    (validateId(paramsId))
-                    ? deleteUser(req, res, paramsId)
-                    : sendResponse(res, 400, { message: 'Invalid user ID' });
+                if (isCorrectSingleUserRequest) {
+                    deleteUser(req, res, paramsId);
+                    break;
                 };
+
+                sendResponse(res, 404, { message: 'Not Found' });
                 break;
             default:
                 sendResponse(res, 404, { message: 'Not Found' });
